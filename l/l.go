@@ -5,7 +5,9 @@
 package l
 
 import (
+	"container/list"
 	"fmt"
+	"time"
 )
 
 // Rules define all the productions
@@ -33,7 +35,7 @@ func (r Rules) Get(key rune) (value string, ok bool) {
 type System struct {
 	axiom string
 	rules Rules
-	state string
+	state *list.List
 }
 
 // NewSystem returns a new system
@@ -41,34 +43,51 @@ func NewSystem(axiom string, rules Rules) *System {
 	s := &System{
 		axiom: axiom,
 		rules: rules,
-		state: axiom,
+		state: list.New(),
+	}
+
+	for _, i := range axiom {
+		s.state.PushBack(i)
 	}
 
 	return s
 }
 
-// Step makes the system take one step (apply the rules once)
-func (s *System) Step() {
-	var state string
+// Step applies the rules once
+func (s *System) Step(delay time.Duration) {
+	var next *list.Element
 
-	for _, i := range s.state {
+	for e := s.state.Front(); e != nil; e = next {
+		i := e.Value.(rune)
+
 		if v, ok := s.rules.Get(i); ok {
 			// expand
-			state = state + v
+			for j := 0; j < len(v); j++ {
+				if string(v[j]) != "" {
+					s.state.InsertBefore(rune(v[j]), e)
+				}
+			}
+			next = e.Next()
+			s.state.Remove(e)
 		} else {
-			state = state + string(i)
+			next = e.Next()
 		}
+		time.Sleep(delay)
+		e = next
 	}
-
-	s.state = state
 }
 
 // State returns the current state of the system
-func (s *System) State() string {
+func (s *System) State() *list.List {
 	return s.state
 }
 
 // String returns state as string
 func (s *System) String() string {
-	return fmt.Sprintf("%v", s.state)
+	var result string
+	for e := s.state.Front(); e != nil; e = e.Next() {
+		i := e.Value.(rune)
+		result = result + string(i)
+	}
+	return fmt.Sprintf("%v", result)
 }
