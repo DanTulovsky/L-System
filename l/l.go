@@ -11,20 +11,20 @@ import (
 )
 
 // Rules define all the productions
-type Rules map[rune]string
+type Rules map[string]string
 
 // NewRules create new production rules
 func NewRules() Rules {
-	return Rules(make(map[rune]string))
+	return Rules(make(map[string]string))
 }
 
 // Add adds a new rule
-func (r Rules) Add(from rune, to string) {
+func (r Rules) Add(from string, to string) {
 	r[from] = to
 }
 
 // Get returns the value at key, ok = false if value doesn't exist
-func (r Rules) Get(key rune) (value string, ok bool) {
+func (r Rules) Get(key string) (value string, ok bool) {
 	if v, ok := r[key]; ok {
 		return v, true
 	}
@@ -47,10 +47,20 @@ func NewSystem(axiom string, rules Rules) *System {
 	}
 
 	for _, i := range axiom {
-		s.state.PushBack(i)
+		s.state.PushBack(string(i))
 	}
 
 	return s
+}
+
+// tokenize tokenizes the given string into a list of string
+func (s *System) tokenize(in string) []string {
+	var result []string
+	// simple for now
+	for _, i := range in {
+		result = append(result, string(i))
+	}
+	return result
 }
 
 // Step applies the rules once
@@ -58,13 +68,13 @@ func (s *System) Step(delay time.Duration) {
 	var next *list.Element
 
 	for e := s.state.Front(); e != nil; e = next {
-		i := e.Value.(rune)
+		i := e.Value.(string)
 
 		if v, ok := s.rules.Get(i); ok {
 			// expand
-			for j := 0; j < len(v); j++ {
-				if string(v[j]) != "" {
-					s.state.InsertBefore(rune(v[j]), e)
+			for _, j := range s.tokenize(v) {
+				if j != "" {
+					s.state.InsertBefore(j, e)
 				}
 			}
 			next = e.Next()
@@ -86,7 +96,7 @@ func (s *System) State() *list.List {
 func (s *System) String() string {
 	var result string
 	for e := s.state.Front(); e != nil; e = e.Next() {
-		i := e.Value.(rune)
+		i := e.Value.(string)
 		result = result + string(i)
 	}
 	return fmt.Sprintf("%v", result)
