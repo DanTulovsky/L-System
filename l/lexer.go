@@ -39,9 +39,9 @@ func NewDefaultLexer(rules Rules) *lexmachine.Lexer {
 	lexer.Add([]byte(`@`), getToken(tokmap["SCALE"]))
 	lexer.Add([]byte(`\[`), getToken(tokmap["PUSH_STATE"]))
 	lexer.Add([]byte(`\]`), getToken(tokmap["POP_STATE"]))
-	lexer.Add([]byte(`\%\d+`), getToken(tokmap["COLOR"]))
-	lexer.Add([]byte(`\>\d+`), getToken(tokmap["COLOR_AFTER"]))
-	lexer.Add([]byte(`\<\d+`), getToken(tokmap["COLOR_BEFORE"]))
+	lexer.Add([]byte(`\%\d*`), getToken(tokmap["COLOR"]))
+	lexer.Add([]byte(`\>\d*`), getToken(tokmap["COLOR_AFTER"]))
+	lexer.Add([]byte(`\<\d*`), getToken(tokmap["COLOR_BEFORE"]))
 
 	// tokens present in the rules
 
