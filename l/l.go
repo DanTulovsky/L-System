@@ -8,6 +8,8 @@ import (
 	"container/list"
 	"fmt"
 	"time"
+
+	"github.com/timtadh/lexmachine"
 )
 
 // Rules define all the productions
@@ -36,14 +38,16 @@ type System struct {
 	axiom string
 	rules Rules
 	state *list.List
+	lexer *lexmachine.Lexer
 }
 
 // NewSystem returns a new system
-func NewSystem(axiom string, rules Rules) *System {
+func NewSystem(axiom string, rules Rules, lexer *lexmachine.Lexer) *System {
 	s := &System{
 		axiom: axiom,
 		rules: rules,
 		state: list.New(),
+		lexer: lexer,
 	}
 
 	for _, i := range axiom {
@@ -57,9 +61,34 @@ func NewSystem(axiom string, rules Rules) *System {
 func (s *System) tokenize(in string) []string {
 	var result []string
 	// simple for now
-	for _, i := range in {
-		result = append(result, string(i))
+	// TODO: Implement using https://blog.gopheracademy.com/advent-2017/lexmachine-advent/
+	// for _, i := range in {
+	// 	result = append(result, string(i))
+	// }
+
+	// lexer
+	scanner, err := s.lexer.Scanner([]byte(in))
+	if err != nil {
+		panic(err)
 	}
+
+	for tk, err, eof := scanner.Next(); !eof; tk, err, eof = scanner.Next() {
+		if err != nil {
+			panic(err)
+		}
+		token := tk.(*lexmachine.Token)
+		value := token.Value.(string)
+		result = append(result, value)
+
+		// fmt.Printf("%-7v | %-25q | %v:%v-%v:%v\n",
+		// 	tokens[token.Type],
+		// 	value,
+		// 	token.StartLine,
+		// 	token.StartColumn,
+		// 	token.EndLine,
+		// 	token.EndColumn)
+	}
+
 	return result
 }
 
