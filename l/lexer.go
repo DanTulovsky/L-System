@@ -36,7 +36,8 @@ func NewDefaultLexer(rules Rules) *lexmachine.Lexer {
 	lexer.Add([]byte(`G`), getToken(tokmap["MOVE"]))
 	lexer.Add([]byte(`-`), getToken(tokmap["TURN_RIGHT"]))
 	lexer.Add([]byte(`\+`), getToken(tokmap["TURN_LEFT"]))
-	lexer.Add([]byte(`@`), getToken(tokmap["SCALE"]))
+	// fix regex later
+	lexer.Add([]byte(`\@(I|Q)*0*(\.)*\d*`), getToken(tokmap["SCALE"]))
 	lexer.Add([]byte(`\[`), getToken(tokmap["PUSH_STATE"]))
 	lexer.Add([]byte(`\]`), getToken(tokmap["POP_STATE"]))
 	lexer.Add([]byte(`\%\d*`), getToken(tokmap["COLOR"]))
