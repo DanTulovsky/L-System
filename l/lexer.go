@@ -8,7 +8,8 @@ import (
 )
 
 var tokens = []string{
-	"MOVE_DRAW", "MOVE", "TURN_RIGHT", "TURN_LEFT", "SCALE", "PUSH_STATE", "POP_STATE", "COLOR", "COLOR_AFTER", "COLOR_BEFORE",
+	"MOVE_DRAW", "MOVE", "TURN_RIGHT", "TURN_LEFT", "SCALE", "PUSH_STATE", "POP_STATE",
+	"COLOR", "COLOR_AFTER", "COLOR_BEFORE", "SWAP_RIGHT_LEFT", "TURN_AROUND",
 }
 
 var tokmap map[string]int
@@ -37,12 +38,14 @@ func NewDefaultLexer(rules Rules) *lexmachine.Lexer {
 	lexer.Add([]byte(`-`), getToken(tokmap["TURN_RIGHT"]))
 	lexer.Add([]byte(`\+`), getToken(tokmap["TURN_LEFT"]))
 	// fix regex later
-	lexer.Add([]byte(`\@(I|Q)*0*(\.)*\d*`), getToken(tokmap["SCALE"]))
+	lexer.Add([]byte(`\@(I|Q)*\d*(\.)*\d*`), getToken(tokmap["SCALE"]))
 	lexer.Add([]byte(`\[`), getToken(tokmap["PUSH_STATE"]))
 	lexer.Add([]byte(`\]`), getToken(tokmap["POP_STATE"]))
 	lexer.Add([]byte(`\%\d*`), getToken(tokmap["COLOR"]))
 	lexer.Add([]byte(`\>\d*`), getToken(tokmap["COLOR_AFTER"]))
 	lexer.Add([]byte(`\<\d*`), getToken(tokmap["COLOR_BEFORE"]))
+	lexer.Add([]byte(`\!`), getToken(tokmap["SWAP_RIGHT_LEFT"]))
+	lexer.Add([]byte(`\|`), getToken(tokmap["TURN_AROUND"]))
 
 	// tokens present in the rules
 
