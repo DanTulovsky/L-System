@@ -111,7 +111,7 @@ func (s *System) Step(delay time.Duration) {
 		} else {
 			next = e.Next()
 		}
-		// time.Sleep(delay)
+		time.Sleep(delay)
 		e = next
 	}
 }
