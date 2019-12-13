@@ -80,13 +80,13 @@ func (s *System) tokenize(in string) []string {
 		value := token.Value.(string)
 		result = append(result, value)
 
-		fmt.Printf("%-7v | %-25q | %v:%v-%v:%v\n",
-			tokens[token.Type],
-			value,
-			token.StartLine,
-			token.StartColumn,
-			token.EndLine,
-			token.EndColumn)
+		// fmt.Printf("%-7v | %-25q | %v:%v-%v:%v\n",
+		// 	tokens[token.Type],
+		// 	value,
+		// 	token.StartLine,
+		// 	token.StartColumn,
+		// 	token.EndLine,
+		// 	token.EndColumn)
 	}
 
 	return result
